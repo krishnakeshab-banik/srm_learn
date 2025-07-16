@@ -142,5 +142,5 @@ Feel free to use and modify for educational or non-commercial purposes.
 ## 🌐 Links
 
 - 🔗 GitHub Repo: [github.com/krishnakeshab-banik/srm_learn](https://github.com/krishnakeshab-banik/srm_learn)
-- 🌍 Live Deployment: *(coming soon via Vercel)*
+- 🌍 Live Deployment: https://srmlearn-dun.vercel.app/
 
