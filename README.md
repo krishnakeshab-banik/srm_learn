@@ -126,8 +126,8 @@ Blends electrical engineering with modern computing and problem-solving skills.
 
 ## 📬 Contact
 
-- 👨‍💻 Author: [Krishna Keshab Banik](https://www.linkedin.com/in/krishnakeshabbanik/)
-- 📧 Email: krishnakeshabbanik@gmail.com
+- 👨‍💻 Author: [Krishna Keshab Banik](https://www.linkedin.com/in/krishna-keshab-banik-067819324/)
+- 📧 Email: krishna.keshab.banik@gmail.com
 - 🏫 SRM Institute of Science and Technology
 
 ---
