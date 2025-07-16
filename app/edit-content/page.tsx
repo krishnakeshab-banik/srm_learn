@@ -244,108 +244,372 @@ export default function EditContentPage() {
     )
   }
 
-  // Step 3: Edit Subtopics
+  // Step 3: Edit Subtopics (show as main explore subtopics page, but editable)
   if (step === "subtopics") {
+    // Simulate the main explore subtopics UI
     return (
-      <div className="container mx-auto py-8 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Subtopics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {editCourse.subtopics.map((sub: any) => (
-                <div key={sub.id} className="flex items-center gap-2 border-b pb-2">
-                  <Input
-                    value={sub.title}
-                    onChange={e => {
-                      setEditCourse({
-                        ...editCourse,
-                        subtopics: editCourse.subtopics.map((s: any) =>
-                          s.id === sub.id ? { ...s, title: e.target.value } : s
-                        ),
-                      })
-                    }}
-                  />
-                  <Button
-                    size="sm"
-                    variant={sub.available ? "success" : "outline"}
-                    onClick={() => handleSubtopicAvailableToggle(sub)}
-                  >
-                    {sub.available ? "Available" : "Unavailable"}
-                  </Button>
-                  <Button size="sm" onClick={() => handleSubtopicEdit(sub)}>
-                    Edit Content
-                  </Button>
-                </div>
-              ))}
-              <Button variant="outline" onClick={handleAddSubtopic}>Add Subtopic</Button>
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="mb-8">
+            <Button
+              variant="outline"
+              onClick={() => setStep("course")}
+              className="inline-flex items-center text-sm text-gray-600 hover:text-primary transition-colors"
+            >
+              ← Back to Course Overview
+            </Button>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h1 className="text-3xl font-bold mb-3 text-gray-800">{editCourse.title}</h1>
+            <p className="text-gray-600 mb-4">{editCourse.overview}</p>
+            <div className="flex items-center text-sm text-gray-500">
+              <span>{editCourse.subtopics.length} subtopics</span>
+              <span className="mx-2">•</span>
+              <span>
+                {
+                  editCourse.subtopics.filter((s: any) => s.available).length
+                } available now
+              </span>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+          <h2 className="text-2xl font-bold mb-6 text-gray-800">Explore Subtopics</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {editCourse.subtopics.map((sub: any, idx: number) => (
+              <div key={sub.id} className="relative group">
+                <Card
+                  className={`hover:shadow-md transition-all duration-300 border-l-4 ${
+                    sub.available ? "border-l-primary" : "opacity-75"
+                  }`}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex gap-4 items-start">
+                      <div className="bg-gray-100 p-3 rounded-lg">
+                        {/* Icon can be dynamic per subtopic */}
+                        <span className="font-bold text-lg">{idx + 1}</span>
+                      </div>
+                      <div>
+                        <input
+                          className="font-semibold text-gray-800 bg-transparent border-b border-dashed border-gray-300 focus:outline-none focus:border-primary"
+                          value={sub.title}
+                          onChange={e => {
+                            setEditCourse({
+                              ...editCourse,
+                              subtopics: editCourse.subtopics.map((s: any) =>
+                                s.id === sub.id ? { ...s, title: e.target.value } : s
+                              ),
+                            })
+                          }}
+                        />
+                        {sub.available ? (
+                          <p className="text-sm text-primary mt-1">Available now</p>
+                        ) : (
+                          <p className="text-sm text-muted-foreground mt-1">Content will be available soon</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-4">
+                      <Button
+                        size="sm"
+                        variant={sub.available ? "success" : "outline"}
+                        onClick={() => {
+                          setEditCourse({
+                            ...editCourse,
+                            subtopics: editCourse.subtopics.map((s: any) =>
+                              s.id === sub.id ? { ...s, available: !s.available } : s
+                            ),
+                          })
+                        }}
+                      >
+                        {sub.available ? "Available" : "Unavailable"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          setSelectedSubtopic(sub)
+                          setEditSubtopic({ ...sub })
+                          setStep("subtopic-content")
+                          setSidebarTopics([{ id: "main", title: sub.title, content: sub.content }])
+                          setSelectedSidebar({ id: "main", title: sub.title, content: sub.content })
+                          setSidebarContent(sub.content)
+                          setSidebarTitle(sub.title)
+                        }}
+                      >
+                        Edit Content
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={() => {
+                          setEditCourse({
+                            ...editCourse,
+                            subtopics: editCourse.subtopics.filter((s: any) => s.id !== sub.id)
+                          })
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+            {/* Add Subtopic Card */}
+            <div className="flex items-center justify-center">
+              <Button
+                variant="outline"
+                className="w-full h-full min-h-[120px] border-dashed border-2"
+                onClick={() => {
+                  const newSub = { id: Date.now().toString(), title: "New Subtopic", available: false, content: "" }
+                  setEditCourse({
+                    ...editCourse,
+                    subtopics: [...editCourse.subtopics, newSub]
+                  })
+                }}
+              >
+                + Add Subtopic
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
 
-  // Step 4: Edit Subtopic Content and Sidebar
+  // Step 4: Edit Subtopic Content and Sidebar (show as main subtopic page, but editable)
   if (step === "subtopic-content") {
+    // Helper to insert at cursor position in textarea
+    function insertAtCursor(textareaId: string, insertText: string) {
+      const textarea = document.getElementById(textareaId) as HTMLTextAreaElement | null;
+      if (!textarea) return;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const before = sidebarContent.substring(0, start);
+      const after = sidebarContent.substring(end);
+      setSidebarContent(before + insertText + after);
+      setTimeout(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + insertText.length;
+        textarea.focus();
+      }, 0);
+    }
+
+    // Unique id for textarea for cursor insertion
+    const textareaId = "sidebar-content-editor";
+
+    // Save all sidebar topics' content to the subtopic (so main page reflects all sidebar topics)
+    const handleSaveAndBack = () => {
+      setEditCourse({
+        ...editCourse,
+        subtopics: editCourse.subtopics.map((s: any) =>
+          s.id === editSubtopic.id
+            ? {
+                ...editSubtopic,
+                // Save all sidebar topics as an array (or serialize as needed for your main page)
+                sidebarTopics: [...sidebarTopics],
+                // Optionally, keep the first topic's content as main content for backward compatibility
+                content: sidebarTopics.length > 0 ? sidebarTopics[0].content : "",
+              }
+            : s
+        ),
+      });
+      setStep("subtopics");
+    };
+
+    // When switching sidebar topic, update the selectedSidebar, sidebarTitle, sidebarContent
+    // When saving, update the sidebarTopics array and also update the subtopic's sidebarTopics/content
+
     return (
-      <div className="container mx-auto py-8 max-w-3xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Edit Subtopic Content & Sidebar</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex gap-8">
-              {/* Sidebar Topics */}
-              <div className="w-1/3">
-                <div className="mb-2 font-semibold">Sidebar Topics</div>
-                <div className="space-y-2">
-                  {sidebarTopics.map((topic) => (
-                    <div key={topic.id} className="flex items-center gap-2">
-                      <Input
-                        value={topic.title}
-                        onChange={e => {
-                          setSidebarTopics(sidebarTopics.map(t =>
-                            t.id === topic.id ? { ...t, title: e.target.value } : t
-                          ))
-                        }}
-                        className="flex-1"
-                      />
-                      <Button size="sm" variant="outline" onClick={() => { setSelectedSidebar(topic); setSidebarTitle(topic.title); setSidebarContent(topic.content); }}>Edit</Button>
-                      <Button size="sm" variant="destructive" onClick={() => handleSidebarDelete(topic.id)}>Delete</Button>
-                    </div>
-                  ))}
-                  <Button variant="outline" size="sm" onClick={handleSidebarAdd}>Add Sidebar Topic</Button>
-                </div>
-              </div>
-              {/* Sidebar Content Editor */}
-              <div className="flex-1">
-                <div className="mb-2 font-semibold">Edit Content for: {sidebarTitle}</div>
-                <Input
-                  value={sidebarTitle}
-                  onChange={e => handleSidebarTitleChange(e.target.value)}
-                  className="mb-2"
-                />
-                <RichTextEditor value={sidebarContent} onChange={handleSidebarContentChange} />
-                <div className="flex gap-2 mt-2">
-                  <Button size="sm" onClick={handleSidebarSave}>Save Sidebar Content</Button>
-                </div>
-                {/* Add options for header, image, highlight, quiz, code editor, etc. */}
-                <div className="mt-4 space-x-2">
-                  <Button size="sm" variant="outline">Add Header</Button>
-                  <Button size="sm" variant="outline">Add Image</Button>
-                  <Button size="sm" variant="outline">Highlight Text</Button>
-                  <Button size="sm" variant="outline">Add Quiz</Button>
-                  <Button size="sm" variant="outline">Add Code Editor</Button>
-                </div>
-              </div>
+      <div className="min-h-screen bg-white">
+        <div className="max-w-7xl mx-auto p-6 flex flex-col md:flex-row gap-8">
+          {/* Sidebar Topics (like main page, but editable) */}
+          <aside className="w-full md:w-1/4">
+            <div className="mb-4 flex justify-between items-center">
+              <span className="font-semibold text-lg">Sidebar Topics</span>
+              <Button size="sm" variant="outline" onClick={() => {
+                const newSidebar = { id: Date.now().toString(), title: "New Sidebar Topic", content: "" }
+                setSidebarTopics([...sidebarTopics, newSidebar])
+                setSelectedSidebar(newSidebar)
+                setSidebarTitle(newSidebar.title)
+                setSidebarContent(newSidebar.content)
+              }}>
+                + Add
+              </Button>
             </div>
-          </CardContent>
-          <CardFooter className="flex justify-end">
-            <Button onClick={handleSubtopicSave}>Save & Back to Subtopics</Button>
-          </CardFooter>
-        </Card>
+            <div className="space-y-2">
+              {sidebarTopics.map((topic) => (
+                <div key={topic.id} className={`flex items-center gap-2 ${selectedSidebar?.id === topic.id ? "bg-blue-50" : ""}`}>
+                  <Input
+                    value={topic.title}
+                    onChange={e => {
+                      setSidebarTopics(sidebarTopics.map(t =>
+                        t.id === topic.id ? { ...t, title: e.target.value } : t
+                      ))
+                    }}
+                    className="flex-1"
+                  />
+                  <Button size="sm" variant="outline" onClick={() => {
+                    setSelectedSidebar(topic)
+                    setSidebarTitle(topic.title)
+                    setSidebarContent(topic.content)
+                  }}>Edit</Button>
+                  <Button size="sm" variant="destructive" onClick={() => {
+                    setSidebarTopics(sidebarTopics.filter(t => t.id !== topic.id))
+                    if (selectedSidebar?.id === topic.id) {
+                      setSelectedSidebar(null)
+                      setSidebarTitle("")
+                      setSidebarContent("")
+                    }
+                  }}>Delete</Button>
+                </div>
+              ))}
+            </div>
+          </aside>
+          {/* Main Content Editor for selected sidebar topic */}
+          <main className="flex-1">
+            {selectedSidebar ? (
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <div className="mb-4 flex flex-col md:flex-row md:items-center gap-2">
+                  <Input
+                    value={sidebarTitle}
+                    onChange={e => setSidebarTitle(e.target.value)}
+                    className="font-bold text-xl"
+                    placeholder="Sidebar Topic Title"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setSidebarTopics(sidebarTopics.map(t =>
+                        t.id === selectedSidebar.id ? { ...t, title: sidebarTitle, content: sidebarContent } : t
+                      ))
+                    }}
+                  >
+                    Save Title
+                  </Button>
+                </div>
+                {/* Content Editing Area */}
+                <Textarea
+                  id={textareaId}
+                  value={sidebarContent}
+                  onChange={e => setSidebarContent(e.target.value)}
+                  className="min-h-[200px] font-mono mb-4"
+                  placeholder="Type content here. Use Markdown for formatting. (In production, use a rich text editor.)"
+                />
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {/* Add Title Box */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n## Title Box\n")}
+                  >Add Title Box</Button>
+                  {/* Add Paragraph Box */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n> Paragraph Box\n")}
+                  >Add Paragraph Box</Button>
+                  {/* Highlight */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n<span style=\"background:yellow\">Highlight this text</span>\n")}
+                  >Highlight</Button>
+                  {/* Table */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n| Header1 | Header2 |\n| ------- | ------- |\n| Cell1   | Cell2   |\n")}
+                  >Add Table</Button>
+                  {/* Image */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n![Alt text](image-url)\n")}
+                  >Add Image</Button>
+                  {/* Code Editor */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n```cpp\n// Your code here\n```\n")}
+                  >Add Code Editor</Button>
+                  {/* Quiz */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n<!-- QUIZ_START -->\nQuestion: ...\nOptions: ...\nAnswer: ...\n<!-- QUIZ_END -->\n")}
+                  >Add Quiz</Button>
+                  {/* Poll */}
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => insertAtCursor(textareaId, "\n<!-- POLL_START -->\nPoll Question: ...\nOptions: ...\n<!-- POLL_END -->\n")}
+                  >Add Poll</Button>
+                  {/* Delete Content */}
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={() => setSidebarContent("")}
+                  >Delete Content</Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setSidebarTopics(sidebarTopics.map(t =>
+                        t.id === selectedSidebar.id ? { ...t, title: sidebarTitle, content: sidebarContent } : t
+                      ))
+                    }}
+                  >
+                    Save Content
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => {
+                      setSidebarTitle(selectedSidebar.title)
+                      setSidebarContent(selectedSidebar.content)
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </div>
+                <div className="mt-8">
+                  <div className="font-semibold mb-2">Live Preview:</div>
+                  <div className="prose prose-sm bg-gray-50 p-4 rounded">
+                    {/* Render markdown and HTML for preview */}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: sidebarContent
+                          .replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) =>
+                            `<pre class="bg-gray-900 text-green-200 p-2 rounded mb-2"><code>${code.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</code></pre>`
+                          )
+                          .replace(/\n## (.*)/g, "<h2 class='text-xl font-bold my-2'>$1</h2>")
+                          .replace(/\n> (.*)/g, "<div class='bg-gray-100 p-2 rounded my-2'>$1</div>")
+                          .replace(/\|(.+)\|\n\|(.+)\|\n((?:\|.+\|\n?)*)/g, (match) => {
+                            // crude markdown table to html
+                            const rows = match.trim().split('\n');
+                            const header = rows[0].split('|').filter(Boolean).map(cell => `<th>${cell.trim()}</th>`).join('');
+                            const body = rows.slice(2).map(row =>
+                              `<tr>${row.split('|').filter(Boolean).map(cell => `<td>${cell.trim()}</td>`).join('')}</tr>`
+                            ).join('');
+                            return `<table class="table-auto border mb-2"><thead><tr>${header}</tr></thead><tbody>${body}</tbody></table>`;
+                          })
+                          .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="my-2 rounded shadow" />')
+                          .replace(/<span style="background:yellow">(.+?)<\/span>/g, '<span style="background:yellow">$1</span>')
+                          .replace(/<!-- QUIZ_START -->([\s\S]*?)<!-- QUIZ_END -->/g, '<div class="bg-blue-50 p-2 rounded my-2">[Quiz Block]</div>')
+                          .replace(/<!-- POLL_START -->([\s\S]*?)<!-- POLL_END -->/g, '<div class="bg-green-50 p-2 rounded my-2">[Poll Block]</div>')
+                          .replace(/\n/g, "<br/>")
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="text-gray-500 text-center mt-16">Select a sidebar topic to edit its content.</div>
+            )}
+            <div className="flex justify-end mt-8">
+              <Button onClick={handleSaveAndBack}>Save & Back to Subtopics</Button>
+            </div>
+          </main>
+        </div>
       </div>
     )
   }

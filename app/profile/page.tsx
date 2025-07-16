@@ -173,6 +173,24 @@ export default function ProfilePage() {
                     </CardHeader>
                   </Card>
                 ))}
+                {/* Add DS Stack as an available subtopic */}
+                <Card className="overflow-hidden hover:shadow-md transition-shadow">
+                  <div className="relative h-40">
+                    <Image src="https://media.geeksforgeeks.org/wp-content/uploads/20220718121726/Stack.png" alt="Stack Data Structure" fill className="object-cover" />
+                    <div className="absolute top-2 right-2">
+                      <Badge className="bg-blue-500">Available</Badge>
+                    </div>
+                  </div>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Stack Data Structure</CardTitle>
+                    <CardDescription>Explore the Stack topic</CardDescription>
+                  </CardHeader>
+                  <CardFooter>
+                    <Button variant="outline" className="w-full" asChild>
+                      <Link href="/topics/ds-stack">Explore Stack</Link>
+                    </Button>
+                  </CardFooter>
+                </Card>
               </div>
             </section>
 

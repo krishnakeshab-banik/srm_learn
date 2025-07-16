@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Queue Exercises</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .nav button:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .nav button.active {
+            background: #28a745;
+        }
+
+        .exercise-container {
+            padding: 30px;
+            min-height: 500px;
+        }
+
+        .exercise {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .exercise h3 {
+            color: #495057;
+            margin-top: 0;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .drag-drop-area {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .drag-items {
+            background: white;
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            flex: 1;
+        }
+
+        .drop-zone {
+            background: #e3f2fd;
+            border: 2px dashed #2196F3;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 200px;
+            flex: 1;
+            position: relative;
+        }
+
+        .drop-zone.active {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        .draggable-item {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: move;
+            display: inline-block;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .draggable-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .draggable-item.dragging {
+            opacity: 0.5;
+        }
+
+        .code-editor {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .code-input {
+            width: 100%;
+            height: 200px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .code-output {
+            background: #1a202c;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin-top: 10px;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+
+        .quiz-question {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .quiz-question h4 {
+            color: #495057;
+            margin-top: 0;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .quiz-option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+            border-color: #007bff;
+        }
+
+        .quiz-option.selected {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .quiz-option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .quiz-option.incorrect {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .fill-blank {
+            background: #e9ecef;
+            border: 2px solid #007bff;
+            border-radius: 3px;
+            padding: 5px 10px;
+            margin: 0 5px;
+            min-width: 80px;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .fill-blank input {
+            border: none;
+            background: transparent;
+            text-align: center;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .fill-blank input:focus {
+            outline: none;
+        }
+
+        .result {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .result.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .result.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .prediction-area {
+            background: #f8f9fa;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .prediction-input {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .score-display {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #6c757d;
+        }
+
+        .step.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .step-line {
+            flex: 1;
+            height: 2px;
+            background: #e9ecef;
+            margin: 0 10px;
+        }
+
+        .step-line.completed {
+            background: #28a745;
+        }
+
+        @media (max-width: 768px) {
+            .drag-drop-area {
+                flex-direction: column;
+            }
+            
+            .nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav button {
+                width: 200px;
+                margin: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Interactive Queue Exercises</h1>
+            <p>Learn queues through hands-on activities and coding challenges</p>
+        </div>
+
+        <div class="nav">
+            <button onclick="showExercise('drag-drop')" class="active" id="drag-drop-btn">Drag & Drop</button>
+            <button onclick="showExercise('coding')" id="coding-btn">Coding Challenge</button>
+            <button onclick="showExercise('quiz')" id="quiz-btn">Quiz</button>
+            <button onclick="showExercise('fill-blank')" id="fill-blank-btn">Fill Blanks</button>
+            <button onclick="showExercise('predict')" id="predict-btn">Predict Output</button>
+        </div>
+
+        <div class="exercise-container">
+            <!-- Drag and Drop Exercise -->
+            <div id="drag-drop" class="exercise-section">
+                <div class="exercise">
+                    <h3>🎪 Drag & Drop: Queue Operations Order</h3>
+                    <p>Arrange the queue operations in the correct order to achieve the final state: <strong>[30, 40, 50]</strong></p>
+                    
+                    <div class="drag-drop-area">
+                        <div class="drag-items">
+                            <h4>Available Operations:</h4>
+                            <div class="draggable-item" draggable="true" data-operation="enqueue(10)">enqueue(10)</div>
+                            <div class="draggable-item" draggable="true" data-operation="enqueue(20)">enqueue(20)</div>
+                            <div class="draggable-item" draggable="true" data-operation="enqueue(30)">enqueue(30)</div>
+                            <div class="draggable-item" draggable="true" data-operation="enqueue(40)">enqueue(40)</div>
+                            <div class="draggable-item" draggable="true" data-operation="enqueue(50)">enqueue(50)</div>
+                            <div class="draggable-item" draggable="true" data-operation="dequeue()">dequeue()</div>
+                            <div class="draggable-item" draggable="true" data-operation="dequeue()">dequeue()</div>
+                        </div>
+                        
+                        <div class="drop-zone" id="drop-zone">
+                            <h4>Correct Order:</h4>
+                            <p>Drop operations here in the correct sequence</p>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="checkDragDropAnswer()">Check Answer</button>
+                    <button class="btn" onclick="resetDragDrop()">Reset</button>
+                    <div id="drag-result"></div>
+                </div>
+            </div>
+
+            <!-- Coding Challenge -->
+            <div id="coding" class="exercise-section hidden">
+                <div class="exercise">
+                    <h3>💻 Coding Challenge: Implement Queue Functions</h3>
+                    <p>Complete the missing functions in the queue implementation:</p>
+                    
+                    <div class="code-editor">
+class Queue:
+    def __init__(self):
+        self.queue = []
+    
+    def enqueue(self, item):
+        # TODO: Implement enqueue
+        pass
+    
+    def dequeue(self):
+        # TODO: Implement dequeue
+        pass
+    
+    def peek(self):
+        # TODO: Implement peek
+        pass
+    
+    def is_empty(self):
+        # TODO: Implement is_empty
+        pass
+                    </div>
+                    
+                    <textarea class="code-input" id="code-input" placeholder="Write your implementation here...">
+class Queue:
+    def __init__(self):
+        self.queue = []
+    
+    def enqueue(self, item):
+        # TODO: Implement enqueue
+        pass
+    
+    def dequeue(self):
+        # TODO: Implement dequeue
+        pass
+    
+    def peek(self):
+        # TODO: Implement peek
+        pass
+    
+    def is_empty(self):
+        # TODO: Implement is_empty
+        pass
+
+# Test code
+q = Queue()
+q.enqueue(10)
+q.enqueue(20)
+print(f"Peek: {q.peek()}")
+print(f"Dequeue: {q.dequeue()}")
+print(f"Is empty: {q.is_empty()}")
+                    </textarea>
+                    
+                    <button class="btn" onclick="runCode()">Run Code</button>
+                    <button class="btn btn-success" onclick="checkCode()">Check Solution</button>
+                    
+                    <div class="code-output" id="code-output">Output will appear here...</div>
+                </div>
+            </div>
+
+            <!-- Quiz Exercise -->
+            <div id="quiz" class="exercise-section hidden">
+                <div class="exercise">
+                    <h3>🧠 Queue Knowledge Quiz</h3>
+                    <div class="score-display">Score: <span id="quiz-score">0</span>/5</div>
+                    
+                    <div class="quiz-question">
+                        <h4>1. What does FIFO stand for?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">First In, First Out</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">First In, Final Out</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, true)">First In, First Out</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Final In, First Out</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>2. Which operation adds an element to the queue?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">push</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, true)">enqueue</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">insert</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">add</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>3. What is the time complexity of queue operations?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(this, true)">O(1)</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">O(n)</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">O(log n)</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">O(n²)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>4. Which queue type reuses memory efficiently?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Simple Queue</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, true)">Circular Queue</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Priority Queue</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Linear Queue</div>
+                        </div>
+                    </div>
+                    
+                    <div class="quiz-question">
+                        <h4>5. In a priority queue, which element is processed first?</h4>
+                        <div class="quiz-options">
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">First inserted</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Last inserted</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, true)">Highest priority</div>
+                            <div class="quiz-option" onclick="selectQuizOption(this, false)">Random element</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" onclick="finishQuiz()">Finish Quiz</button>
+                    <button class="btn" onclick="resetQuiz()">Reset Quiz</button>
+                </div>
+            </div>
+
+            <!-- Fill in the Blanks -->
+            <div id="fill-blank" class="exercise-section hidden">
+                <div class="exercise">
+                    <h3>✏️ Fill in the Blanks</h3>
+                    <p>Complete the statements about queues:</p>
+                    
+                    <div class="quiz-question">
+                        <p>1. A queue follows the <span class="fill-blank"><input type="text" id="blank1" placeholder="????"></span> principle.</p>
+                        <p>2. The operation to add an element to a queue is called <span class="fill-blank"><input type="text" id="blank2" placeholder="????"></span>.</p>
+                        <p>3. The operation to remove an element from a queue is called <span class="fill-blank"><input type="text" id="blank3" placeholder="????"></span>.</p>
+                        <p>4. In a circular queue, when rear reaches the end, it wraps around to the <span class="fill-blank"><input type="text" id="blank4" placeholder="????"></span>.</p>
+                        <p>5. A <span class="fill-blank"><input type="text" id="blank5" placeholder="????"></span> queue processes elements by importance rather than insertion order.</p>
+                    </div>
+                    
+                    <button class="btn" onclick="checkFillBlanks()">Check Answers</button>
+                    <button class="btn" onclick="resetFillBlanks()">Reset</button>
+                    <div id="fill-result"></div>
+                </div>
+            </div>
+
+            <!-- Predict Output -->
+            <div id="predict" class="exercise-section hidden">
+                <div class="exercise">
+                    <h3>🔮 Predict the Output</h3>
+                    <p>Look at the code and predict what will be printed:</p>
+                    
+                    <div class="code-editor">
+queue = []
+queue.append(10)
+queue.append(20)
+queue.append(30)
+print("Queue:", queue)
+
+first = queue.pop(0)
+print("Removed:", first)
+print("Queue after removal:", queue)
+
+queue.append(40)
+print("After adding 40:", queue)
+
+second = queue.pop(0)
+print("Removed:", second)
+print("Final queue:", queue)
+                    </div>
+                    
+                    <div class="prediction-area">
+                        <h4>Your Prediction:</h4>
+                        <textarea class="prediction-input" id="prediction-input" placeholder="Write what you think will be printed..."></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="checkPrediction()">Check Prediction</button>
+                    <button class="btn" onclick="showActualOutput()">Show Actual Output</button>
+                    <button class="btn" onclick="resetPrediction()">Reset</button>
+                    
+                    <div id="prediction-result"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentExercise = 'drag-drop';
+        let draggedElement = null;
+        let quizScore = 0;
+        let quizCompleted = false;
+
+        // Navigation
+        function showExercise(exerciseType) {
+            // Hide all exercises
+            document.querySelectorAll('.exercise-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected exercise
+            document.getElementById(exerciseType).classList.remove('hidden');
+            document.getElementById(exerciseType + '-btn').classList.add('active');
+            
+            currentExercise = exerciseType;
+        }
+
+        // Drag and Drop functionality
+        function setupDragAndDrop() {
+            const draggableItems = document.querySelectorAll('.draggable-item');
+            const dropZone = document.getElementById('drop-zone');
+
+            draggableItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+            dropZone.addEventListener('dragenter', handleDragEnter);
+            dropZone.addEventListener('dragleave', handleDragLeave);
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('active');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('active');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            this.classList.remove('active');
+            
+            if (draggedElement) {
+                const droppedElement = draggedElement.cloneNode(true);
+                droppedElement.draggable = false;
+                droppedElement.style.margin = '5px';
+                
+                // Add remove button
+                const removeBtn = document.createElement('span');
+                removeBtn.innerHTML = ' ❌';
+                removeBtn.style.cursor = 'pointer';
+                removeBtn.onclick = function() {
+                    this.parentElement.remove();
+                };
+                droppedElement.appendChild(removeBtn);
+                
+                this.appendChild(droppedElement);
+                draggedElement.style.opacity = '0.5';
+                draggedElement.draggable = false;
+            }
+        }
+
+        function checkDragDropAnswer() {
+            const dropZone = document.getElementById('drop-zone');
+            const droppedItems = dropZone.querySelectorAll('.draggable-item');
+            
+            const correctOrder = [
+                'enqueue(10)',
+                'enqueue(20)',
+                'enqueue(30)',
+                'enqueue(40)',
+                'enqueue(50)',
+                'dequeue()',
+                'dequeue()'
+            ];
+            
+            let userOrder = [];
+            droppedItems.forEach(item => {
+                userOrder.push(item.getAttribute('data-operation'));
+            });
+            
+            const isCorrect = JSON.stringify(userOrder) === JSON.stringify(correctOrder);
+            
+            const resultDiv = document.getElementById('drag-result');
+            if (isCorrect) {
+                resultDiv.innerHTML = '<div class="result correct">✅ Correct! The operations will result in queue [30, 40, 50]</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result incorrect">❌ Incorrect. Try again! Remember: enqueue all elements first, then dequeue the first two.</div>';
+            }
+        }
+
+        function resetDragDrop() {
+            const dropZone = document.getElementById('drop-zone');
+            dropZone.innerHTML = '<h4>Correct Order:</h4><p>Drop operations here in the correct sequence</p>';
+            
+            const draggableItems = document.querySelectorAll('.draggable-item');
+            draggableItems.forEach(item => {
+                item.style.opacity = '1';
+                item.draggable = true;
+            });
+            
+            document.getElementById('drag-result').innerHTML = '';
+        }
+
+        // Coding Challenge
+        function runCode() {
+            const code = document.getElementById('code-input').value;
+            const output = document.getElementById('code-output');
+            
+            // Simple code execution simulation
+            try {
+                // This is a simplified simulation
+                output.textContent = 'Code executed successfully!\nNote: This is a simulation. In a real environment, your code would run here.';
+            } catch (error) {
+                output.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        function checkCode() {
+            const code = document.getElementById('code-input').value;
+            const output = document.getElementById('code-output');
+            
+            // Check if code contains basic queue operations
+            const hasEnqueue = code.includes('self.queue.append') || code.includes('self.queue.insert');
+            const hasDequeue = code.includes('self.queue.pop(0)') || code.includes('self.queue.popleft');
+            const hasPeek = code.includes('self.queue[0]') || code.includes('return self.queue[0]');
+            const hasIsEmpty = code.includes('len(self.queue) == 0') || code.includes('not self.queue');
+            
+            if (hasEnqueue && hasDequeue && hasPeek && hasIsEmpty) {
+                output.innerHTML = '<span style="color: #28a745;">✅ Great! Your implementation looks correct!</span>\n\nExpected output:\nPeek: 10\nDequeue: 10\nIs empty: False';
+            } else {
+                let feedback = '<span style="color: #dc3545;">❌ Implementation incomplete. Missing:</span>\n';
+                if (!hasEnqueue) feedback += '- enqueue method\n';
+                if (!hasDequeue) feedback += '- dequeue method\n';
+                if (!hasPeek) feedback += '- peek method\n';
+                if (!hasIsEmpty) feedback += '- is_empty method\n';
+                
+                output.innerHTML = feedback;
+            }
+        }
+
+        // Quiz functionality
+        function selectQuizOption(option, isCorrect) {
+            const allOptions = option.parentElement.querySelectorAll('.quiz-option');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            option.dataset.correct = isCorrect;
+        }
+
+        function finishQuiz() {
+            const questions = document.querySelectorAll('.quiz-question');
+            let score = 0;
+            
+            questions.forEach(question => {
+                const selectedOption = question.querySelector('.quiz-option.selected');
+                if (selectedOption) {
+                    const isCorrect = selectedOption.dataset.correct === 'true';
+                    if (isCorrect) {
+                        selectedOption.classList.add('correct');
+                        score++;
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        // Show correct answer
+                        const correctOption = question.querySelector('.quiz-option[data-correct="true"]');
+                        if (correctOption) {
+                            correctOption.classList.add('correct');
+                        }
+                    }
+                }
+            });
+            
+            document.getElementById('quiz-score').textContent = score;
+            quizCompleted = true;
+        }
+
+        function resetQuiz() {
+            const allOptions = document.querySelectorAll('.quiz-option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            document.getElementById('quiz-score').textContent = '0';
+            quizCompleted = false;
+        }
+
+        // Fill in the blanks
+        function checkFillBlanks() {
+            const answers = {
+                blank1: 'fifo',
+                blank2: 'enqueue',
+                blank3: 'dequeue',
+                blank4: 'beginning',
+                blank5: 'priority'
+            };
+            
+            let score = 0;
+            let feedback = '';
+            
+            Object.keys(answers).forEach(blankId => {
+                const input = document.getElementById(blankId);
+                const userAnswer = input.value.toLowerCase().trim();
+                const correctAnswer = answers[blankId];
+                
+                if (userAnswer === correctAnswer) {
+                    input.style.backgroundColor = '#d4edda';
+                    score++;
+                } else {
+                    input.style.backgroundColor = '#f8d7da';
+                    feedback += `${blankId}: Expected "${correctAnswer}", got "${userAnswer}"\n`;
+                }
+            });
+            
+            const resultDiv = document.getElementById('fill-result');
+            if (score === 5) {
+                resultDiv.innerHTML = '<div class="result correct">✅ Perfect! All answers are correct!</div>';
+            } else {
+                resultDiv.innerHTML = `<div class="result incorrect">❌ ${score}/5 correct. Check highlighted answers.</div>`;
+            }
+        }
+
+        function resetFillBlanks() {
+            const inputs = document.querySelectorAll('#fill-blank input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+            });
+            
+            document.getElementById('fill-result').innerHTML = '';
+        }
+
+        // Predict output
+        function checkPrediction() {
+            const userPrediction = document.getElementById('prediction-input').value;
+            const expectedOutput = `Queue: [10, 20, 30]
+Removed: 10
+Queue after removal: [20, 30]
+After adding 40: [20, 30, 40]
+Removed: 20
+Final queue: [30, 40]`;
+            
+            const resultDiv = document.getElementById('prediction-result');
+            
+            // Simple comparison (in real implementation, would be more sophisticated)
+            if (userPrediction.trim().includes('Queue: [10, 20, 30]') && 
+                userPrediction.trim().includes('Removed: 10') &&
+                userPrediction.trim().includes('Final queue: [30, 40]')) {
+                resultDiv.innerHTML = '<div class="result correct">✅ Great prediction! You understand queue operations well!</div>';
+            } else {
+                resultDiv.innerHTML = '<div class="result incorrect">❌ Not quite right. Try again or check the actual output.</div>';
+            }
+        }
+
+        function showActualOutput() {
+            const actualOutput = `Queue: [10, 20, 30]
+Removed: 10
+Queue after removal: [20, 30]
+After adding 40: [20, 30, 40]
+Removed: 20
+Final queue: [30, 40]`;
+            
+            const resultDiv = document.getElementById('prediction-result');
+            resultDiv.innerHTML = `<div class="result correct">
+                <h4>Actual Output:</h4>
+                <pre>${actualOutput}</pre>
+            </div>`;
+        }
+
+        function resetPrediction() {
+            document.getElementById('prediction-input').value = '';
+            document.getElementById('prediction-result').innerHTML = '';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupDragAndDrop();
+        });
+    </script>
+</body>
+</html>

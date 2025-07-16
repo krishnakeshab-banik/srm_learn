@@ -1,0 +1,143 @@
+switch (complexity) {
+      case "O(1)": return "bg-green-500"
+      case "O(log n)": return "bg-blue-500"
+      case "O(log log n)": return "bg-cyan-500"
+      case "O(√n)": return "bg-yellow-500"
+      case "O(n)": return "bg-orange-500"
+      case "O(n log n)": return "bg-red-500"
+      default: return "bg-gray-500"
+    }
+  }
+=======
+
+  const getComplexityColor = (complexity: string) => {
+    switch (complexity) {
+      case "O(1)": return "bg-green-500"
+      case "O(log n)": return "bg-blue-500"
+      case "O(log log n)": return "bg-cyan-500"
+      case "O(√n)": return "bg-yellow-500"
+      case "O(n)": return "bg-orange-500"
+      case "O(n log n)": return "bg-red-500"
+      default: return "bg-gray-500"
+    }
+  }
+
+  // Helper to get complexity values based on selected metric
+  const getComplexityValue = (algorithm: typeof algorithms[0], caseType: 'best' | 'average' | 'worst') => {
+    if (selectedMetric === 'time') {
+      return algorithm.timeComplexity[caseType]
+    } else {
+      // For space complexity, only one value exists, so return it for all cases
+      return algorithm.spaceComplexity
+    }
+  }
+>>>>>>> REPLACE
+=======
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(algorithm.timeComplexity.best)}`}>
+                  {algorithm.timeComplexity.best}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(algorithm.timeComplexity.average)}`}>
+                  {algorithm.timeComplexity.average}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(algorithm.timeComplexity.worst)}`}>
+                  {algorithm.timeComplexity.worst}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(algorithm.spaceComplexity)}`}>
+                  {algorithm.spaceComplexity}
+                </span>
+              </td>
+=======
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(getComplexityValue(algorithm, 'best'))}`}>
+                  {getComplexityValue(algorithm, 'best')}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(getComplexityValue(algorithm, 'average'))}`}>
+                  {getComplexityValue(algorithm, 'average')}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(getComplexityValue(algorithm, 'worst'))}`}>
+                  {getComplexityValue(algorithm, 'worst')}
+                </span>
+              </td>
+              <td className="px-6 py-4 text-center">
+                <span className={`px-3 py-1 rounded-full text-sm font-semibold text-white ${getComplexityColor(algorithm.spaceComplexity)}`}>
+                  {algorithm.spaceComplexity}
+                </span>
+              </td>
+>>>>>>> REPLACE
+=======
+          {algorithms.slice(0, 3).map((algorithm) => (
+            <div key={algorithm.id} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="font-medium">{algorithm.name}</span>
+                <span className="text-sm text-gray-600">{algorithm.timeComplexity.average}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(6 - getComplexityRank(algorithm.timeComplexity.average)) * 20}%` }}
+                  transition={{ duration: 1, delay: 0.5 }}
+                  className={`h-2 rounded-full ${algorithm.color}`}
+                />
+              </div>
+            </div>
+          ))}
+=======
+          {algorithms.slice(0, 3).map((algorithm) => {
+            const complexityValue = selectedMetric === 'time' ? algorithm.timeComplexity.average : algorithm.spaceComplexity;
+            return (
+              <div key={algorithm.id} className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">{algorithm.name}</span>
+                  <span className="text-sm text-gray-600">{complexityValue}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(6 - getComplexityRank(complexityValue)) * 20}%` }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className={`h-2 rounded-full ${algorithm.color}`}
+                  />
+                </div>
+              </div>
+            )
+          })}
+>>>>>>> REPLACE
+=======
+            {[
+              { complexity: "O(1)", desc: "Constant time - Best possible!", color: "bg-green-500" },
+              { complexity: "O(log n)", desc: "Logarithmic - Very efficient", color: "bg-blue-500" },
+              { complexity: "O(√n)", desc: "Square root - Moderate", color: "bg-yellow-500" },
+              { complexity: "O(n)", desc: "Linear - Acceptable for small data", color: "bg-orange-500" }
+            ].map((item) => (
+              <div key={item.complexity} className="flex items-center space-x-3">
+                <div className={`w-4 h-4 rounded-full ${item.color}`} />
+                <span className="font-medium">{item.complexity}</span>
+                <span className="text-sm text-gray-600">{item.desc}</span>
+              </div>
+            ))}
+=======
+            {[
+              { complexity: "O(1)", desc: "Constant time - Best possible!", color: "bg-green-500" },
+              { complexity: "O(log n)", desc: "Logarithmic - Very efficient", color: "bg-blue-500" },
+              { complexity: "O(log log n)", desc: "Double logarithmic - Extremely efficient", color: "bg-cyan-500" },
+              { complexity: "O(√n)", desc: "Square root - Moderate", color: "bg-yellow-500" },
+              { complexity: "O(n)", desc: "Linear - Acceptable for small data", color: "bg-orange-500" },
+              { complexity: "O(n log n)", desc: "Linearithmic - Slower", color: "bg-red-500" }
+            ].map((item) => (
+              <div key={item.complexity} className="flex items-center space-x-3">
+                <div className={`w-4 h-4 rounded-full ${item.color}`} />
+                <span className="font-medium">{item.complexity}</span>
+                <span className="text-sm text-gray-600">{item.desc}</span>
+              </div>
+            ))}
