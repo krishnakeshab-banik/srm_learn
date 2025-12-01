@@ -17,7 +17,7 @@ export default function FeaturedCourses({ isHomePage, selectedCategory }: Featur
       id: "ds1",
       title: "Data Structures - 1",
       faculty: {
-        name: "Dr. K Sarvanan",
+        name: "Dr. A Maheshwari",
         profileUrl: "/faculty/k-sarvanan",
       },
       duration: "59m",
