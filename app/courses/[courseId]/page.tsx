@@ -9,7 +9,7 @@ export default function CourseIntroPage({ params }: { params: { courseId: string
     ds1: {
       id: "ds1",
       title: "Data Structures - 1",
-      instructor: "Dr. K Sarwanan",
+      instructor: "Dr. A Maheshwari",
       rating: "4.3",
       description:
         "Master the fundamentals of Data Structures and Algorithms to build efficient and optimized solutions.",
