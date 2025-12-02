@@ -10,7 +10,7 @@ export default function HomePage() {
         <div
           className="relative bg-cover bg-center h-[600px]"
           style={{
-            backgroundImage: `url('./bangalore-education-services-photo-13.jpg')`,
+            backgroundImage: `url('/bangalore-education-services-photo-13.jpg')`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
