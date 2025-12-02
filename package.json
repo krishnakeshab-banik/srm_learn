@@ -69,3 +69,7 @@
     "typescript": "^5"
   }
 }
+"overrides": {
+  "date-fns": "3.6.0"
+}
+
