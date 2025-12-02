@@ -11,6 +11,8 @@ export default function HomePage() {
           className="relative bg-cover bg-center h-[600px]"
           style={{
             backgroundImage: `url('./bangalore-education-services-photo-13.jpg')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
           }}
         >
           <div className="absolute inset-0 bg-black/40">
