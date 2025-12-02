@@ -10,7 +10,7 @@ export default function HomePage() {
         <div
           className="relative bg-cover bg-center h-[600px]"
           style={{
-            backgroundImage: `url('https://d23qowwaqkh3fj.cloudfront.net/wp-content/uploads/2024/07/IST-BANNER-3.jpg')`,
+            backgroundImage: `url('https://www.google.com/imgres?q=SRM%20University&imgurl=https%3A%2F%2Fbangaloreeducationservice.com%2Fwp-content%2Fuploads%2F2016%2F01%2Fbangalore-education-services-photo-13.jpg&imgrefurl=https%3A%2F%2Fbangaloreeducationservice.com%2Fcolleges%2Fsrm-university%2F&docid=7P-xk5mxTAuJ1M&tbnid=lJ-CH7vq9SFZSM&vet=12ahUKEwjJ1fTp-56RAxW6zjgGHbJaEBgQM3oECBsQAA..i&w=700&h=300&hcb=2&ved=2ahUKEwjJ1fTp-56RAxW6zjgGHbJaEBgQM3oECBsQAA')`,
           }}
         >
           <div className="absolute inset-0 bg-black/40">
